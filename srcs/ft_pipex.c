@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/24 18:51:26 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/24 19:56:30 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,26 +26,12 @@
 //https://askubuntu.com/questions/428458/why-do-shells-call-fork
 //http://alumni.cs.ucr.edu/~weesan/cs153/lab2_notes.html
 //https://stackoverflow.com/questions/30149779/c-execve-parameters-spawn-a-shell-example
+// /usr/libexec/path_helper -s  
 
-//#include <errno.h>
 #include <stdio.h>
-/*
-int main()
-{
-	char *env[] = {NULL};
-	char *comm_args[] = {"-la", "/"};
-	if (execve("/bin/ls", &comm_args[0], env) == -1)
-	{
-		ft_printf("pipex: cmmand not found: %s\n", "ls");
-	}
-}
-*/
 
 int main()
-//int main(int argc, char **argv)
 {
-
-
 	char *env[] = {NULL};
 	char *comm_args[] = {"/bin/ls", "-la"};
 	pid_t	child;
@@ -58,26 +44,18 @@ int main()
 
 	if (child == 0)
 	{
-	//	dup2(fds[1], fds[0]);
-	//
-		
-
 		dup2(fds[1], 1);
 		close(fds[0]);
 		close(fds[1]);
 		execve("/bin/ls", &comm_args[0], env);
 		perror("pipex");
-		
 	}
-
 	waitpid(child, &child_status, 0); //no sé si es necesario para el pipe...
 	dup2(fds[0], 0);
 	close(fds[0]);
 	close(fds[1]);
-	char *comm_args2[] = {"/bin/cat", "i", NULL};
+	char *comm_args2[] = {"/usr/bin/grep", "srcs", NULL};
 	execve(comm_args2[0], &comm_args2[0], NULL);
 	perror("grep");
-
 }
-
 

@@ -23,7 +23,7 @@ INC			= ./inc
 
 $(NAME):	$(OBJS)	
 			cd srcs/ftprintf && make && cd ../..
-			$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L. -lftprintf
+			$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L./srcs/ftprintf/ -lftprintf
 
 $(BONUS_NAME):	$(OBJS_BONUS)
 				$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(BONUS_NAME)
@@ -34,9 +34,11 @@ all:		$(NAME)
 bonus:		$(BONUS_NAME)
 
 clean:
+			cd srcs/ftprintf && make clean && cd ../..
 			$(RM) $(OBJS) $(OBJS_BONUS)
 
 fclean:		clean
+			cd srcs/ftprintf && make fclean && cd ../..
 			$(RM) $(NAME) $(BONUS_NAME)
 
 re:			fclean all

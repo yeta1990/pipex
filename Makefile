@@ -1,4 +1,4 @@
-SRCS		= ft_pipex.c
+SRCS		= srcs/ft_pipex.c
 
 SRCS_BONUS	= 0 
 

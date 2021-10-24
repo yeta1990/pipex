@@ -1,4 +1,4 @@
-SRCS		= srcs/ft_pipex.c
+SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c
 
 SRCS_BONUS	= 0 
 

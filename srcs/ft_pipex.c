@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/24 19:56:30 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/24 23:31:04 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,58 @@
 
 #include <stdio.h>
 
-int main()
+
+
+int main(int argc, char **argv)
 {
 	char *env[] = {NULL};
-	char *comm_args[] = {"/bin/ls", "-la"};
+	char *comm_args[] = {"/usr/libexec/path_helper", "-la"};
 	pid_t	child;
 	int		child_status;
 	int fds[2]; 
+	int	i;
+	int	j;
+	char *cmd;
+	char **paths;
+	
+	paths = get_paths();
+	i = 1;
+	j = 0;
+	cmd = 0;
+	while (i < argc)
+	{
+		j = 0;
+		while (paths[j])
+		{
+			cmd = ft_strjoin(paths[j], argv[i]);
+			if (access(cmd, X_OK) != -1)
+			{
+				child = fork();
+				if (child == 0)
+				{
+					execve(cmd, &argv[i], NULL);
+					perror("pipex");
+
+				}
+				waitpid(child, &child_status, 0);
+				i++;
+				j = 0;
+				break ;
+			}
+			free(cmd);
+			j++;
+		}
+		// if cmd isn't found
+		if (j == 6)
+		{
+		//	execve(argv[i], &argv[i], NULL);
+		//	perror(argv[i]);
+			ft_putstr_fd(ft_strjoin("pipex: command not found: ", argv[i]), 2);
+			ft_putstr_fd("\n", 2);
+			exit(1);
+		}
+		i++;
+	}
 
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
@@ -44,18 +89,33 @@ int main()
 
 	if (child == 0)
 	{
-		dup2(fds[1], 1);
-		close(fds[0]);
-		close(fds[1]);
-		execve("/bin/ls", &comm_args[0], env);
+//		dup2(fds[1], 1);
+//		close(fds[0]);
+//		close(fds[1]);
+		execve("/usr/libexec/path_helper", &comm_args[0], env);
 		perror("pipex");
 	}
 	waitpid(child, &child_status, 0); //no sé si es necesario para el pipe...
-	dup2(fds[0], 0);
-	close(fds[0]);
-	close(fds[1]);
-	char *comm_args2[] = {"/usr/bin/grep", "srcs", NULL};
-	execve(comm_args2[0], &comm_args2[0], NULL);
-	perror("grep");
+//	dup2(fds[0], 0);
+//	close(fds[0]);
+//	close(fds[1]);
+//	char *comm_args2[] = {"/usr/bin/grep", "srcs", NULL};
+//	execve(comm_args2[0], &comm_args2[0], NULL);
+//	perror("grep");
+//	system("leaks pipex");
 }
 
+char	**get_paths(void)
+{
+	char **paths;
+	
+	paths = malloc(sizeof(char *) * 7);
+	paths[0] = ft_strdup("/usr/local/bin/");
+	paths[1] = ft_strdup("/usr/bin/");
+	paths[2] = ft_strdup("/bin/");
+	paths[3] = ft_strdup("/usr/sbin/");
+	paths[4] = ft_strdup("/sbin/");
+	paths[5] = ft_strdup("/Library/Frameworks/Python.framework/Versions/3.9/bin/");
+	paths[6] = 0;
+	return (paths);
+}

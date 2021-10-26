@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/26 17:58:15 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/27 01:48:36 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 //https://stackoverflow.com/questions/30149779/c-execve-parameters-spawn-a-shell-example
 // /usr/libexec/path_helper -s  
 // whereis ...
-
+// https://stackoverflow.com/questions/2605130/redirecting-exec-output-to-a-buffer-or-file
+// https://stackoverflow.com/questions/7292642/grabbing-output-from-exec
 
 #include <stdio.h>
 #include <errno.h>
@@ -48,6 +49,34 @@ int main(int argc, char **argv)
 	cmd = 0;
 	child = 0;
 
+	pipe(fds);
+	char *f[] = {"path_helper", "-s", NULL};
+	char **env;
+	env = malloc(sizeof(char *) * 2);
+	child = fork();
+	if (child == 0)
+	{
+		close(fds[0]);
+		dup2(fds[1], 1);
+		dup2(fds[1], 2);
+		close(fds[1]);
+		execve("/usr/libexec/path_helper", &f[0], NULL);
+		perror("path error");
+	}
+	else
+	{
+		//better with get next line
+		char buffer[1024];
+
+		close(fds[1]);
+		while (read(fds[0], buffer, sizeof(buffer)) != 0)
+			env[0] = ft_strdup(buffer);
+		env[1] = NULL;
+		ft_printf("%s", *env);
+	}
+
+//	exit(1);
+
 	int fd;
 //	char *comm_args[] = {"ls", "-l", "-s", NULL};
 	fd = ft_input_or_cmd(argv[1], &cmd);
@@ -58,7 +87,6 @@ int main(int argc, char **argv)
 		child = fork();
 		if (child == 0)
 		{
-			//execve(cmd, &comm_args[0], NULL);
 			execve(cmd, &cmdargs[0], NULL);
 			perror("pipex1");
 		}

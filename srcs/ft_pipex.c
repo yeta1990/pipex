@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/25 18:14:25 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/26 17:58:15 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,61 +35,72 @@
 
 int main(int argc, char **argv)
 {
-	char *env[] = {NULL};
-	char *comm_args[] = {"/usr/libexec/path_helper", "-la"};
 	pid_t	child;
 	int		child_status;
-	int fds[2]; 
-	int	i;
-	int	j;
-	char *cmd;
-	char **paths;
+	int		fds[2]; 
+	int		i;
+	int		j;
+	char	*cmd;
+	char	**cmdargs;
 	
-	paths = get_paths();
 	i = 2;
 	j = 0;
 	cmd = 0;
+	child = 0;
 
-	ft_check_input_file(argv[1]);
-	while (i < argc)
+	int fd;
+//	char *comm_args[] = {"ls", "-l", "-s", NULL};
+	fd = ft_input_or_cmd(argv[1], &cmd);
+	// if it starts whith a command directly, without standard input
+	if (fd == 0)
 	{
-		j = 0;
-		while (paths[j])
+		cmdargs = create_args(argv, 1);
+		child = fork();
+		if (child == 0)
 		{
-			cmd = ft_strjoin(paths[j], argv[i]);
-			if (access(cmd, X_OK) != -1)
-			{
-				child = fork();
-				if (child == 0)
-				{
-					execve(cmd, &argv[i], NULL);
-					perror("pipex");
-				}
-				waitpid(child, &child_status, 0);
-			//	i++; // este i++ hace que el siguiente argumento entre como parámetro del comando ejecutdo, tengo que investigar
-				j = 0;
-				break ;
-			}
-			free(cmd);
-			j++;
+			//execve(cmd, &comm_args[0], NULL);
+			execve(cmd, &cmdargs[0], NULL);
+			perror("pipex1");
 		}
-		// if cmd isn't found
-		if (j == 6)
-		{
-			execve(argv[i], (char  *const *)argv[i], NULL);
-		//	perror(argv[i]);
-		//	ft_putstr_fd(ft_strjoin("pipex: command not found: ", argv[i]), 2);
-			//ft_putstr_fd("\n", 2);
-			ft_putstr_fd(strerror(errno), 2);
-		//	perror("pipex");
-		//	waitpid(child, &child_status, 0);
-			exit(1);
-		}
-		i++;
+		return (0);
 	}
+	// if there is only an input file, without any other command nor file 
+	else if (argc == 2)
+	{
+		child = fork();
+		if (child == 0)
+		{
+			char *comm_args3[] = {"cat", argv[1], NULL};
+			execve("/bin/cat", &comm_args3[0], NULL);
+		}
+		waitpid(child, &child_status, 0);
+		return (0);
+	}	
+	//if there is file and command (standard case), read std input with cat.
+	else
+	{
+		if (pipe(fds) < 0)
+			ft_putstr_fd("Error creating pipe", 2);
 
-	if (pipe(fds) < 0)
-		ft_putstr_fd("Error creating pipe", 2);
+		child = fork();
+			if (child == 0)
+		if (child == 0)
+		{
+			dup2(fds[1], 1);
+			close(fds[0]);
+			close(fds[1]);
+			char *comm_args3[] = {"cat", argv[1], NULL};
+			execve("/bin/cat", &comm_args3[0], NULL);
+		}
+	}
+	waitpid(child, &child_status, 0);
+	dup2(fds[0], 0);
+	close(fds[0]);
+	close(fds[1]);
+
+ft_printf("pringao");
+/*
+
 	child = fork();
 
 	if (child == 0)
@@ -104,16 +115,19 @@ int main(int argc, char **argv)
 	dup2(fds[0], 0);
 	close(fds[0]);
 	close(fds[1]);
+
+*/
 //	char *comm_args2[] = {"/usr/bin/grep", "srcs", NULL};
 //	execve(comm_args2[0], &comm_args2[0], NULL);
 //	perror("grep");
+//	free(paths);
 //	system("leaks pipex");
 }
 
 char	**get_paths(void)
 {
 	char **paths;
-	
+
 	paths = malloc(sizeof(char *) * 8);
 	paths[0] = ft_strdup("/usr/local/bin/");
 	paths[1] = ft_strdup("/usr/bin/");
@@ -121,7 +135,20 @@ char	**get_paths(void)
 	paths[3] = ft_strdup("/usr/sbin/");
 	paths[4] = ft_strdup("/sbin/");
 	paths[5] = ft_strdup("/Library/Frameworks/Python.framework/Versions/3.9/bin/");
-	paths[5] = ft_strdup("/usr/local/munki/");
+	paths[6] = ft_strdup("/usr/local/munki/");
 	paths[7] = 0;
 	return (paths);
+}
+
+void free_paths(char **paths)
+{
+	int	i;
+
+	i = 0;
+	while (paths[i])
+	{	
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
 }

@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 14:18:57 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/25 17:42:36 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/26 17:46:21 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ void	*ft_memcpy(void *dst, const void *src, size_t n);
 void	*ft_memmove(void *dst, const void *src, size_t len);
 size_t	ft_strlen(const char *s);
 char	**get_paths(void);
-int		ft_check_input_file(char *file);
+int		ft_input_or_cmd(char *file, char **cmd);
+int		is_cmd(char *file, char **cmd_ok);
+char	**create_args(char **argv, int start);
+void	free_paths(char **paths);
 
 #endif

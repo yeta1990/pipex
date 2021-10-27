@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/26 17:46:40 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/27 14:17:45 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int is_cmd(char *file, char **cmd_ok)
 			free(cmd_try);
 			return (1);
 		}
-	//	free(paths);
 		free(cmd_try);
 		j++;
 	}
@@ -55,7 +54,7 @@ int is_cmd(char *file, char **cmd_ok)
 	return (0);
 }
 
-char **create_args(char **argv, int start)
+char	**create_args(char **argv, int start)
 {
 	int i;
 	char *cmd;
@@ -74,5 +73,24 @@ char **create_args(char **argv, int start)
 		j++;
 	}
 	args[j] = 0;
+	free(cmd);
 	return (args);
+}
+
+int	count_cmds(char **argv)
+{
+	int		i;
+	int		cmds;
+	char	*cmd;
+
+	i = 1;
+	cmds = 0;
+	while (argv && argv[i])
+	{
+		if (is_cmd(argv[i], &cmd))
+			cmds++;
+		i++;
+	}
+	free(cmd);
+	return (cmds);
 }

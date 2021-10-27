@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 15:29:52 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/26 17:44:35 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/27 12:48:10 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,6 @@ int		ft_putstr_fd(char *s, int fd);
 size_t	ft_putnbr_base(size_t nbr, char *base);
 size_t	ft_num_len(int n);
 size_t	ft_putnbr_base_long(unsigned long long nbr, char *base);
+int		count_cmds(char **argv);
 
 #endif

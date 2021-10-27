@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 01:48:36 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/27 14:18:13 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,58 +39,20 @@ int main(int argc, char **argv)
 	pid_t	child;
 	int		child_status;
 	int		fds[2]; 
-	int		i;
-	int		j;
 	char	*cmd;
-	char	**cmdargs;
-	
-	i = 2;
-	j = 0;
-	cmd = 0;
+	int		cmds;
+	int		has_output_file;
+	has_output_file = 0;
+	cmds = count_cmds(argv);
 	child = 0;
-
-	pipe(fds);
-	char *f[] = {"path_helper", "-s", NULL};
-	char **env;
-	env = malloc(sizeof(char *) * 2);
-	child = fork();
-	if (child == 0)
-	{
-		close(fds[0]);
-		dup2(fds[1], 1);
-		dup2(fds[1], 2);
-		close(fds[1]);
-		execve("/usr/libexec/path_helper", &f[0], NULL);
-		perror("path error");
-	}
-	else
-	{
-		//better with get next line
-		char buffer[1024];
-
-		close(fds[1]);
-		while (read(fds[0], buffer, sizeof(buffer)) != 0)
-			env[0] = ft_strdup(buffer);
-		env[1] = NULL;
-		ft_printf("%s", *env);
-	}
-
-//	exit(1);
-
+	cmd = 0;
 	int fd;
-//	char *comm_args[] = {"ls", "-l", "-s", NULL};
 	fd = ft_input_or_cmd(argv[1], &cmd);
-	// if it starts whith a command directly, without standard input
-	if (fd == 0)
+	// if it starts or ends whith a command directly, without standard input
+	if (cmds == 1 && argc == 2)
 	{
-		cmdargs = create_args(argv, 1);
-		child = fork();
-		if (child == 0)
-		{
-			execve(cmd, &cmdargs[0], NULL);
-			perror("pipex1");
-		}
-		return (0);
+		one_cmd_no_outfile(argv, 1);
+
 	}
 	// if there is only an input file, without any other command nor file 
 	else if (argc == 2)
@@ -100,6 +62,7 @@ int main(int argc, char **argv)
 		{
 			char *comm_args3[] = {"cat", argv[1], NULL};
 			execve("/bin/cat", &comm_args3[0], NULL);
+		//	execve("/bin/cat", &argv[1], NULL);
 		}
 		waitpid(child, &child_status, 0);
 		return (0);
@@ -109,9 +72,7 @@ int main(int argc, char **argv)
 	{
 		if (pipe(fds) < 0)
 			ft_putstr_fd("Error creating pipe", 2);
-
 		child = fork();
-			if (child == 0)
 		if (child == 0)
 		{
 			dup2(fds[1], 1);
@@ -126,7 +87,7 @@ int main(int argc, char **argv)
 	close(fds[0]);
 	close(fds[1]);
 
-ft_printf("pringao");
+//ft_printf("pringao");
 /*
 
 	child = fork();
@@ -149,23 +110,52 @@ ft_printf("pringao");
 //	execve(comm_args2[0], &comm_args2[0], NULL);
 //	perror("grep");
 //	free(paths);
-//	system("leaks pipex");
+	free(cmd);
 }
 
 char	**get_paths(void)
 {
-	char **paths;
+	int		fds[2]; 
+	char **env;
+	char buffer[1024];
+//	char *buffer;
+//	buffer = malloc(51);
+	pipe(fds);
+	env = malloc(sizeof(char *) * 2);
+	if (fork() == 0)
+	{
+		dup2(fds[1], 1);
+		dup2(fds[1], 2);
+		close(fds[0]);
+		close(fds[1]);
+		execve("/usr/libexec/path_helper", NULL, NULL);
+		perror("path error");
+	}
+	else
+	{
+		close(fds[1]);
+		read(fds[0], buffer, sizeof(buffer));
+		env[0] = ft_strdup(buffer);
+		env[1] = NULL;
+	}
+	return (path_surgery(env));
+}
 
-	paths = malloc(sizeof(char *) * 8);
-	paths[0] = ft_strdup("/usr/local/bin/");
-	paths[1] = ft_strdup("/usr/bin/");
-	paths[2] = ft_strdup("/bin/");
-	paths[3] = ft_strdup("/usr/sbin/");
-	paths[4] = ft_strdup("/sbin/");
-	paths[5] = ft_strdup("/Library/Frameworks/Python.framework/Versions/3.9/bin/");
-	paths[6] = ft_strdup("/usr/local/munki/");
-	paths[7] = 0;
-	return (paths);
+char	**path_surgery(char **path_to_cut)
+{
+	char	*e1;
+	char	*e2;
+	char	**env;
+
+	e1 = ft_strtrim(*path_to_cut, "PATH=\"");
+	e2 = ft_strtrim(e1, "\"; export PATH;\n");
+	free(e1);
+	e1 = ft_strjoin(e2, ":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
+	free_paths(path_to_cut);
+	env = ft_split_mod(e1, ':');
+	free(e2);
+	free(e1);
+	return (env); 
 }
 
 void free_paths(char **paths)

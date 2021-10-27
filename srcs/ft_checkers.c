@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_error_handler.c                                 :+:      :+:    :+:   */
+/*   ft_checkers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 14:17:45 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/28 00:34:38 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-int	ft_input_or_cmd(char *file, char **cmd_ok)
+int	ft_input_or_cmd(char *file)
 {
 	int r;
 
-	if (is_cmd(file, cmd_ok))
+	if (is_cmd(file, NULL))
 		return (0);
 	r = open(file, O_RDONLY);
 	if (r < 0)
@@ -42,9 +42,10 @@ int is_cmd(char *file, char **cmd_ok)
 		cmd_try = ft_strjoin(paths[j], file);
 		if (access(cmd_try, X_OK) != -1)
 		{
-			*cmd_ok = ft_strdup(cmd_try);
-			free_paths(paths);
+			if (cmd_ok)
+				*cmd_ok = ft_strdup(cmd_try);
 			free(cmd_try);
+			free_paths(paths);
 			return (1);
 		}
 		free(cmd_try);
@@ -81,16 +82,14 @@ int	count_cmds(char **argv)
 {
 	int		i;
 	int		cmds;
-	char	*cmd;
 
 	i = 1;
 	cmds = 0;
 	while (argv && argv[i])
 	{
-		if (is_cmd(argv[i], &cmd))
+		if (is_cmd(argv[i], NULL))
 			cmds++;
 		i++;
 	}
-	free(cmd);
 	return (cmds);
 }

@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 13:09:13 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 14:13:27 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/28 00:09:14 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ void	one_cmd_no_outfile(char **argv, int pos)
 		execve(cmd_path, &cmdargs[0], NULL);
 		perror("pipex");
 	}
-	else
-	{
+//	else
+//	{
 		waitpid(child, &child_status, 0);
 		free(cmd_path);
 		free_paths(cmdargs);
-	}
+//	}
 }
 

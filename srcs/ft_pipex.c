@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 15:55:52 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/28 00:45:05 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,16 @@ int main(int argc, char **argv)
 {
 	pid_t	child;
 	int		child_status;
-	int		fds[2]; 
-	char	*cmd;
 	int		cmds;
 	int		has_output_file;
 	has_output_file = 0;
 	cmds = count_cmds(argv);
-	child = 0;
-	cmd = 0;
 	int fd;
-	fd = ft_input_or_cmd(argv[1], &cmd);
-	// if it starts or ends whith a command directly, without standard input
-	int i;
-	i = 0;
 
 	// if there is only an input file, without any other command nor file 
+	if (argc == 1)
+		return (0);
+	fd = ft_input_or_cmd(argv[1]);
 	if (cmds == 0 && argc == 2)
 	{
 		child = fork();
@@ -65,8 +60,23 @@ int main(int argc, char **argv)
 		return (0);
 	}
 	else if (cmds == 1 && argc == 2)
+	{
 		one_cmd_no_outfile(argv, 1);
+		return (0);
+	}
+	parse_and_execute(argc, argv, cmds);
+}
 
+void	parse_and_execute(int argc, char **argv, int cmds)
+{
+	int	i;
+	pid_t	child;
+	int	fds[2];
+	int	child_status;
+	
+	argc = argc * 1;
+	i = 0;
+	child = 0;
 	while (i < cmds)
 	{
 	//if there is file and command (standard case), read std input with cat.
@@ -91,25 +101,29 @@ int main(int argc, char **argv)
 			waitpid(child, &child_status, 0);
 			dup2(fds[0], 0);
 			close(fds[1]);
-			is_cmd(argv[2], &cmdcmd);
+			is_cmd(argv[i], &cmdcmd);
 			child = fork();
 			if (child == 0)
 			{	
 				execve(cmdcmd, &cmdargs[0], NULL);
 				perror("pipex");
 			}
+			waitpid(child, &child_status, 0);
+			if (*cmdargs)
+				free_paths(cmdargs);
 		}
-	i++;
+		i++;
 	}
-	free(cmd);
 }
 
 char	**get_paths(void)
 {
 	int		fds[2]; 
 	char **env;
-	char buffer[1024];
-
+//	char buffer[1024];
+	char	*buffer;
+	
+	buffer = malloc(sizeof(char) * 1024);
 	pipe(fds);
 	env = malloc(sizeof(char *) * 2);
 	if (fork() == 0)
@@ -128,6 +142,7 @@ char	**get_paths(void)
 		env[0] = ft_strdup(buffer);
 		env[1] = NULL;
 	}
+	free(buffer);
 	return (path_surgery(env));
 }
 

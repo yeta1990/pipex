@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 14:18:13 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/27 15:55:52 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,31 +49,31 @@ int main(int argc, char **argv)
 	int fd;
 	fd = ft_input_or_cmd(argv[1], &cmd);
 	// if it starts or ends whith a command directly, without standard input
-	if (cmds == 1 && argc == 2)
-	{
-		one_cmd_no_outfile(argv, 1);
+	int i;
+	i = 0;
 
-	}
 	// if there is only an input file, without any other command nor file 
-	else if (argc == 2)
+	if (cmds == 0 && argc == 2)
 	{
 		child = fork();
 		if (child == 0)
 		{
 			char *comm_args3[] = {"cat", argv[1], NULL};
 			execve("/bin/cat", &comm_args3[0], NULL);
-		//	execve("/bin/cat", &argv[1], NULL);
 		}
 		waitpid(child, &child_status, 0);
 		return (0);
-	}	
-	//if there is file and command (standard case), read std input with cat.
-	else
+	}
+	else if (cmds == 1 && argc == 2)
+		one_cmd_no_outfile(argv, 1);
+
+	while (i < cmds)
 	{
+	//if there is file and command (standard case), read std input with cat.
 		if (pipe(fds) < 0)
 			ft_putstr_fd("Error creating pipe", 2);
 		child = fork();
-		if (child == 0)
+		if (child == 0 && i == 0)
 		{
 			dup2(fds[1], 1);
 			close(fds[0]);
@@ -81,35 +81,26 @@ int main(int argc, char **argv)
 			char *comm_args3[] = {"cat", argv[1], NULL};
 			execve("/bin/cat", &comm_args3[0], NULL);
 		}
+		else
+		{
+			char	**cmdargs;
+			char 	*cmdcmd;
+			cmdargs = create_args(argv, i);
+		
+		//	ft_printf("arg: %s\n", cmdargs[1]);	
+			waitpid(child, &child_status, 0);
+			dup2(fds[0], 0);
+			close(fds[1]);
+			is_cmd(argv[2], &cmdcmd);
+			child = fork();
+			if (child == 0)
+			{	
+				execve(cmdcmd, &cmdargs[0], NULL);
+				perror("pipex");
+			}
+		}
+	i++;
 	}
-	waitpid(child, &child_status, 0);
-	dup2(fds[0], 0);
-	close(fds[0]);
-	close(fds[1]);
-
-//ft_printf("pringao");
-/*
-
-	child = fork();
-
-	if (child == 0)
-	{
-		dup2(fds[1], 1);
-		close(fds[0]);
-		close(fds[1]);
-		execve("/usr/libexec/path_helper", &comm_args[0], env);
-		perror("pipex");
-	}
-	waitpid(child, &child_status, 0); //no sé si es necesario para el pipe...
-	dup2(fds[0], 0);
-	close(fds[0]);
-	close(fds[1]);
-
-*/
-//	char *comm_args2[] = {"/usr/bin/grep", "srcs", NULL};
-//	execve(comm_args2[0], &comm_args2[0], NULL);
-//	perror("grep");
-//	free(paths);
 	free(cmd);
 }
 
@@ -118,8 +109,7 @@ char	**get_paths(void)
 	int		fds[2]; 
 	char **env;
 	char buffer[1024];
-//	char *buffer;
-//	buffer = malloc(51);
+
 	pipe(fds);
 	env = malloc(sizeof(char *) * 2);
 	if (fork() == 0)

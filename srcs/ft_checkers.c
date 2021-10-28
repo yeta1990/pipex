@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/28 00:34:38 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/28 13:47:35 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ char	**create_args(char **argv, int start)
 	while (argv && argv[i] && !is_cmd(argv[i], &cmd))
 		i++;
 	args = malloc(sizeof(char *) * (i - start + 1));
+
 	while (j < i - start)
 	{
 		args[j] = ft_strdup(argv[start + j]);

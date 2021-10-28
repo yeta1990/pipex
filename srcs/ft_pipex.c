@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/28 00:45:05 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/28 13:54:52 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 // whereis ...
 // https://stackoverflow.com/questions/2605130/redirecting-exec-output-to-a-buffer-or-file
 // https://stackoverflow.com/questions/7292642/grabbing-output-from-exec
+// https://stackoverflow.com/questions/5225810/is-it-possible-to-have-pipe-between-two-child-processes-created-by-same-parent
+//
 
 #include <stdio.h>
 #include <errno.h>
@@ -37,36 +39,55 @@
 int main(int argc, char **argv)
 {
 	pid_t	child;
+//	pid_t	child2;
+
 	int		child_status;
 	int		cmds;
-	int		has_output_file;
-	has_output_file = 0;
-	cmds = count_cmds(argv);
-	int fd;
-
+	char	**cmdargs;
+	int		fds[2];	
+//	int		fds2[2];	
+	char	*cmd;
+//	int		has_output_file;
+//	has_output_file = 0;
+	cmds = count_cmds(argv);	
+	argc = argc * 1;
 	// if there is only an input file, without any other command nor file 
-	if (argc == 1)
-		return (0);
-	fd = ft_input_or_cmd(argv[1]);
-	if (cmds == 0 && argc == 2)
+/*	if (argc == 1 || cmds != 2)
 	{
-		child = fork();
-		if (child == 0)
-		{
-			char *comm_args3[] = {"cat", argv[1], NULL};
-			execve("/bin/cat", &comm_args3[0], NULL);
-		}
-		waitpid(child, &child_status, 0);
+		ft_putstr_fd("Usage: ./pipex infile cmd1 cmd2 outfile\n", 2);
 		return (0);
 	}
-	else if (cmds == 1 && argc == 2)
-	{
-		one_cmd_no_outfile(argv, 1);
-		return (0);
-	}
-	parse_and_execute(argc, argv, cmds);
-}
+*/
+	if (pipe(fds) < 0)
+		ft_putstr_fd("Error creating pipe", 2);
+	child = fork();
+	if (child == 0)
+	{		
+		close(fds[0]);
+		dup2(fds[1], 1);
+		close(fds[1]);
+		char *comm_args3[] = {"cat", argv[1], NULL};
+		execve("/bin/cat", &comm_args3[0], NULL);
 
+	}
+		waitpid(child, &child_status, 0);
+	child = fork();
+	if (child == 0)
+	{
+		close(fds[1]);
+		dup2(fds[0], 0);
+
+			cmdargs = create_args(argv, 2);
+		is_cmd(argv[2], &cmd);
+		execve(cmd, &cmdargs[0], NULL);
+		perror("pipex");
+	}
+
+
+
+
+}
+/*
 void	parse_and_execute(int argc, char **argv, int cmds)
 {
 	int	i;
@@ -115,12 +136,12 @@ void	parse_and_execute(int argc, char **argv, int cmds)
 		i++;
 	}
 }
+*/
 
 char	**get_paths(void)
 {
 	int		fds[2]; 
 	char **env;
-//	char buffer[1024];
 	char	*buffer;
 	
 	buffer = malloc(sizeof(char) * 1024);

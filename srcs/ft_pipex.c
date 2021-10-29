@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 00:25:00 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 00:50:49 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,12 @@ int main(int argc, char **argv)
 	char	*cmd;
 	cmds = count_cmds(argv);	
 	argc = argc * 1;
-	// if there is only an input file, without any other command nor file 
-/*	if (argc == 1 || cmds != 2)
+	if (argc == 1 || cmds != 2)
 	{
 		ft_putstr_fd("Usage: ./pipex infile cmd1 cmd2 outfile\n", 2);
 		return (0);
 	}
-*/
-	cmdargs = 0;
-	cmd = NULL;
+
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
 	child = fork();
@@ -65,46 +62,50 @@ int main(int argc, char **argv)
 		close(fds[0]);
 		dup2(fds[1], 1);
 		close(fds[1]);
-		char *comm_args3[] = {"cat", argv[1], NULL};
-		execve("/bin/cat", &comm_args3[0], NULL);
-	}
-	else
-	{
-		waitpid(child, &child_status, 0);
-		close(fds[1]);
-		pipe(fds2);
-		child = fork();
-		if (child == 0)
+		int	buff;
+		buff = 0;
+		int fd3;
+
+		fd3 = open(argv[1], O_RDONLY);
+		if (fd3 <= 0)
 		{
-			close(fds2[0]);
-			dup2(fds[0], 0);
-			close(fds[0]);
-
-			dup2(fds2[1], 1);
-			close(fds2[1]);
-			cmdargs = create_args(argv, 2);
-			is_cmd(argv[2], &cmd);
-			execve(cmd, &cmdargs[0], NULL);
 			perror("pipex");
+			exit(1);
 		}
-		else
-		{	
-			waitpid(child, &child_status, 0);
-			close(fds[0]);
-			close(fds2[1]);
+		while (read(fd3, &buff, 1))
+			write(1, &buff, 1);
+	}
+	waitpid(child, &child_status, 0);
+	close(fds[1]);
+	pipe(fds2);
+	child = fork();
+	if (child == 0)
+	{
+		close(fds2[0]);
+		dup2(fds[0], 0);
+		close(fds[0]);
+		dup2(fds2[1], 1);
+		close(fds2[1]);
+		cmdargs = create_args(argv, 2);
+		is_cmd(argv[2], &cmd);
+		execve(cmd, &cmdargs[0], NULL);
+		perror("pipex");
+		exit(1);
+	}
+	waitpid(child, &child_status, 0);
+	close(fds[0]);
+	close(fds2[1]);
 
-			child = fork();
-			if (child == 0)
-			{
-				dup2(fds2[0], 0);
-				close(fds2[0]);
-				free(cmd);
-				cmdargs = create_args(argv, 4);
-				is_cmd(argv[4], &cmd);
-				execve(cmd, &cmdargs[0], NULL);
-				perror("pipex");
-			}
-		}
+	child = fork();
+	if (child == 0)
+	{
+		dup2(fds2[0], 0);
+		close(fds2[0]);
+		cmdargs = create_args(argv, 4);
+		is_cmd(argv[4], &cmd);
+		execve(cmd, &cmdargs[0], NULL);
+		perror("pipex");
+		exit(1);
 	}
 	waitpid(child, &child_status, 0);
 	close(fds2[0]);

@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/28 13:54:52 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 00:25:00 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,13 @@
 int main(int argc, char **argv)
 {
 	pid_t	child;
-//	pid_t	child2;
 
 	int		child_status;
 	int		cmds;
 	char	**cmdargs;
 	int		fds[2];	
-//	int		fds2[2];	
+	int		fds2[2];
 	char	*cmd;
-//	int		has_output_file;
-//	has_output_file = 0;
 	cmds = count_cmds(argv);	
 	argc = argc * 1;
 	// if there is only an input file, without any other command nor file 
@@ -58,6 +55,8 @@ int main(int argc, char **argv)
 		return (0);
 	}
 */
+	cmdargs = 0;
+	cmd = NULL;
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
 	child = fork();
@@ -68,75 +67,50 @@ int main(int argc, char **argv)
 		close(fds[1]);
 		char *comm_args3[] = {"cat", argv[1], NULL};
 		execve("/bin/cat", &comm_args3[0], NULL);
-
 	}
+	else
+	{
 		waitpid(child, &child_status, 0);
-	child = fork();
-	if (child == 0)
-	{
 		close(fds[1]);
-		dup2(fds[0], 0);
-
-			cmdargs = create_args(argv, 2);
-		is_cmd(argv[2], &cmd);
-		execve(cmd, &cmdargs[0], NULL);
-		perror("pipex");
-	}
-
-
-
-
-}
-/*
-void	parse_and_execute(int argc, char **argv, int cmds)
-{
-	int	i;
-	pid_t	child;
-	int	fds[2];
-	int	child_status;
-	
-	argc = argc * 1;
-	i = 0;
-	child = 0;
-	while (i < cmds)
-	{
-	//if there is file and command (standard case), read std input with cat.
-		if (pipe(fds) < 0)
-			ft_putstr_fd("Error creating pipe", 2);
+		pipe(fds2);
 		child = fork();
-		if (child == 0 && i == 0)
+		if (child == 0)
 		{
-			dup2(fds[1], 1);
+			close(fds2[0]);
+			dup2(fds[0], 0);
 			close(fds[0]);
-			close(fds[1]);
-			char *comm_args3[] = {"cat", argv[1], NULL};
-			execve("/bin/cat", &comm_args3[0], NULL);
+
+			dup2(fds2[1], 1);
+			close(fds2[1]);
+			cmdargs = create_args(argv, 2);
+			is_cmd(argv[2], &cmd);
+			execve(cmd, &cmdargs[0], NULL);
+			perror("pipex");
 		}
 		else
-		{
-			char	**cmdargs;
-			char 	*cmdcmd;
-			cmdargs = create_args(argv, i);
-		
-		//	ft_printf("arg: %s\n", cmdargs[1]);	
+		{	
 			waitpid(child, &child_status, 0);
-			dup2(fds[0], 0);
-			close(fds[1]);
-			is_cmd(argv[i], &cmdcmd);
+			close(fds[0]);
+			close(fds2[1]);
+
 			child = fork();
 			if (child == 0)
-			{	
-				execve(cmdcmd, &cmdargs[0], NULL);
+			{
+				dup2(fds2[0], 0);
+				close(fds2[0]);
+				free(cmd);
+				cmdargs = create_args(argv, 4);
+				is_cmd(argv[4], &cmd);
+				execve(cmd, &cmdargs[0], NULL);
 				perror("pipex");
 			}
-			waitpid(child, &child_status, 0);
-			if (*cmdargs)
-				free_paths(cmdargs);
 		}
-		i++;
 	}
+	waitpid(child, &child_status, 0);
+	close(fds2[0]);
+
+	return (0);
 }
-*/
 
 char	**get_paths(void)
 {

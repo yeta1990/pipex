@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 01:06:04 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 02:01:56 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 // https://stackoverflow.com/questions/2605130/redirecting-exec-output-to-a-buffer-or-file
 // https://stackoverflow.com/questions/7292642/grabbing-output-from-exec
 // https://stackoverflow.com/questions/5225810/is-it-possible-to-have-pipe-between-two-child-processes-created-by-same-parent
+// https://www.youtube.com/watch?v=l-UhKLdh4aY
 //
 
 #include <stdio.h>
@@ -56,12 +57,15 @@ int main(int argc, char **argv)
 
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
+
 	child = fork();
 	if (child == 0)
-	{		
+	{	
+
 		close(fds[0]);
 		dup2(fds[1], 1);
 		close(fds[1]);
+
 		int	buff;
 		buff = 0;
 		int fd3;
@@ -72,6 +76,7 @@ int main(int argc, char **argv)
 			perror("pipex");
 			exit(1);
 		}
+
 		while (read(fd3, &buff, 1))
 			write(1, &buff, 1);
 	}
@@ -96,9 +101,16 @@ int main(int argc, char **argv)
 	close(fds[0]);
 	close(fds2[1]);
 
+	int fdout;
+	fdout = open("output", O_CREAT | O_WRONLY | O_TRUNC, 0666);
+
+
 	child = fork();
 	if (child == 0)
 	{
+		close(1);
+		dup(fdout);
+
 		dup2(fds2[0], 0);
 		close(fds2[0]);
 		cmdargs = create_args(argv, 4);
@@ -108,8 +120,9 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 	waitpid(child, &child_status, 0);
+	close(fdout);
 	close(fds2[0]);
-
+	
 	return (0);
 }
 

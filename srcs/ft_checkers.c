@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/28 13:47:35 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 12:14:03 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,27 +55,24 @@ int is_cmd(char *file, char **cmd_ok)
 	return (0);
 }
 
-char	**create_args(char **argv, int start)
+char	**create_args(char **argv, int start, int last)
 {
 	int i;
-	char *cmd;
 	int j;
 	char **args;
 
-	cmd = 0;
 	j = 0;
 	i = start + 1;
-	while (argv && argv[i] && !is_cmd(argv[i], &cmd))
+	while (argv && argv[i] && !is_cmd(argv[i], NULL))
 		i++;
-	args = malloc(sizeof(char *) * (i - start + 1));
+	args = malloc(sizeof(char *) * (i - start + 1 - last));
 
-	while (j < i - start)
+	while (j < i - start - last)
 	{
 		args[j] = ft_strdup(argv[start + j]);
 		j++;
 	}
 	args[j] = 0;
-	free(cmd);
 	return (args);
 }
 

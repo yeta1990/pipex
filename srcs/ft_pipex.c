@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 02:01:56 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 12:15:47 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,15 @@ int main(int argc, char **argv)
 
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
+	
+	int	fd = open(argv[1], O_RDONLY);
+	if (fd < 0)
+	{
+		perror("pipex");
+		exit(1);
+	}
+	dup2(fd, 0);
+	close(fd);
 
 	child = fork();
 	if (child == 0)
@@ -66,19 +75,10 @@ int main(int argc, char **argv)
 		dup2(fds[1], 1);
 		close(fds[1]);
 
-		int	buff;
-		buff = 0;
-		int fd3;
+		char *cmdrr[] = {"cat", NULL};
+		execve("/bin/cat", &cmdrr[0], NULL);
 
-		fd3 = open(argv[1], O_RDONLY);
-		if (fd3 <= 0)
-		{
-			perror("pipex");
-			exit(1);
-		}
-
-		while (read(fd3, &buff, 1))
-			write(1, &buff, 1);
+	
 	}
 	waitpid(child, &child_status, 0);
 	close(fds[1]);
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 		close(fds[0]);
 		dup2(fds2[1], 1);
 		close(fds2[1]);
-		cmdargs = create_args(argv, 2);
+		cmdargs = create_args(argv, 2, 0);
 		is_cmd(argv[2], &cmd);
 		execve(cmd, &cmdargs[0], NULL);
 		perror("pipex");
@@ -102,27 +102,29 @@ int main(int argc, char **argv)
 	close(fds2[1]);
 
 	int fdout;
-	fdout = open("output", O_CREAT | O_WRONLY | O_TRUNC, 0666);
-
+	fdout = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+	if (fdout < 0)
+	{
+		perror("pipex");
+		exit(1);
+	}
+	close(1);
+	dup(fdout);
 
 	child = fork();
 	if (child == 0)
 	{
-		close(1);
-		dup(fdout);
-
 		dup2(fds2[0], 0);
 		close(fds2[0]);
-		cmdargs = create_args(argv, 4);
+		cmdargs = create_args(argv, 4, 1);
 		is_cmd(argv[4], &cmd);
 		execve(cmd, &cmdargs[0], NULL);
 		perror("pipex");
 		exit(1);
 	}
 	waitpid(child, &child_status, 0);
-	close(fdout);
 	close(fds2[0]);
-	
+
 	return (0);
 }
 

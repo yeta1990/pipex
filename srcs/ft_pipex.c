@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 13:17:03 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 23:55:45 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,25 @@
 
 int	main(int argc, char **argv)
 {
-	pid_t	child;
-	int		child_status;
-	char	**cmdargs;
 	int		fds[2];	
-	char	*cmd;
+	int		last;
 
 	input_error_checker(argc, argv);
+	last = last_cmd(argc, argv);
 	ft_dup_infile(argv[1]);
+	ft_exec_first(argv, fds);
+	ft_dup_output(argv[argc - 1]);
+	ft_exec_last(argv, fds, last);
+	return (0);
+}
+
+void	ft_exec_first(char **argv, int fds[2])
+{
+	int		child_status;
+	pid_t	child;
+	char	*cmd;
+	char	**cmdargs;
+
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
 	child = fork();
@@ -38,97 +49,26 @@ int	main(int argc, char **argv)
 	}
 	waitpid(child, &child_status, 0);
 	close(fds[1]);
-/*	pipe(fds2);
+}
+
+void	ft_exec_last(char **argv, int fds[2], int last)
+{
+	int		child_status;
+	pid_t	child;
+	char	*cmd;
+	char	**cmdargs;
+
 	child = fork();
 	if (child == 0)
 	{
-		close(fds2[0]);
 		dup2(fds[0], 0);
 		close(fds[0]);
-		dup2(fds2[1], 1);
-		close(fds2[1]);
-		cmdargs = create_args(argv, 2, 0);
-		is_cmd(argv[2], &cmd);
+		cmdargs = create_args(argv, last, 1);
+		is_cmd(argv[last], &cmd);
 		execve(cmd, &cmdargs[0], NULL);
 		perror("pipex");
 		exit(1);
 	}
 	waitpid(child, &child_status, 0);
 	close(fds[0]);
-	close(fds2[1]);
-*/
-	ft_dup_output(argv[argc - 1]);
-	child = fork();
-	if (child == 0)
-	{
-		dup2(fds[0], 0);
-		close(fds[0]);
-		cmdargs = create_args(argv, 4, 1);
-		is_cmd(argv[4], &cmd);
-		execve(cmd, &cmdargs[0], NULL);
-		perror("pipex");
-		exit(1);
-	}
-	waitpid(child, &child_status, 0);
-	close(fds[0]);
-	return (0);
-}
-
-char	**get_paths(void)
-{
-	int		fds[2];
-	char	**env;
-	char	*buffer;
-
-	buffer = malloc(sizeof(char) * 1024);
-	pipe(fds);
-	env = malloc(sizeof(char *) * 2);
-	if (fork() == 0)
-	{
-		dup2(fds[1], 1);
-		dup2(fds[1], 2);
-		close(fds[0]);
-		close(fds[1]);
-		execve("/usr/libexec/path_helper", NULL, NULL);
-		perror("path error");
-	}
-	else
-	{
-		close(fds[1]);
-		read(fds[0], buffer, sizeof(buffer));
-		env[0] = ft_strdup(buffer);
-		env[1] = NULL;
-	}
-	free(buffer);
-	return (path_surgery(env));
-}
-
-char	**path_surgery(char **path_to_cut)
-{
-	char	*e1;
-	char	*e2;
-	char	**env;
-
-	e1 = ft_strtrim(*path_to_cut, "PATH=\"");
-	e2 = ft_strtrim(e1, "\"; export PATH;\n");
-	free(e1);
-	e1 = ft_strjoin(e2, ":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
-	free_paths(path_to_cut);
-	env = ft_split_mod(e1, ':');
-	free(e2);
-	free(e1);
-	return (env);
-}
-
-void	free_paths(char **paths)
-{
-	int	i;
-
-	i = 0;
-	while (paths[i])
-	{	
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
 }

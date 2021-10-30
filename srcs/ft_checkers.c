@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 13:13:32 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 23:27:24 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,18 @@ int	count_cmds(char **argv)
 		i++;
 	}
 	return (cmds);
+}
+
+int	last_cmd(int argc, char **argv)
+{
+	int	i;
+
+	i = argc - 2;
+	while (i > 0)
+	{
+		if (is_cmd(argv[i], NULL))
+			return (i);
+		i--;
+	}
+	return (i);
 }

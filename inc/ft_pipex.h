@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 14:18:57 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 13:15:08 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 23:50:19 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,8 @@ void	parse_and_execute(int argc, char **argv, int cmdargs);
 void	input_error_checker(int argc, char **argv);
 void	ft_dup_infile(char *file);
 void	ft_dup_output(char *file);
+int		last_cmd(int argc, char **argv);
+void	ft_exec_last(char **argv, int fds[2], int last);
+void	ft_exec_first(char **argv, int fds[2]);
 
 #endif

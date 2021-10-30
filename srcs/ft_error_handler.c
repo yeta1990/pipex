@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 12:52:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 13:13:59 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 23:59:30 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	input_error_checker(int argc, char **argv)
 {
 	int		cmds;
-	char	**get_emergency_paths(void);
 
 	cmds = count_cmds(argv);
 	if (argc == 1 || cmds != 2)

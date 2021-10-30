@@ -1,4 +1,4 @@
-SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_operations.c
+SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler.c srcs/ft_files.c
 
 SRCS_BONUS	= 0 
 

@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strtrim.c                                       :+:      :+:    :+:   */
+/*   ft_strtrim_full_string.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/17 10:18:26 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 10:24:26 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 13:17:43 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-static int ft_first_oc(char *s1, char *set);
-static int ft_last_oc(char *s1, char *set);
+static int	ft_first_oc(char *s1, char *set);
+static int	ft_last_oc(char *s1, char *set);
 
 char	*ft_strtrim(char const *s1, char const *set)
 {
@@ -30,15 +30,15 @@ char	*ft_strtrim(char const *s1, char const *set)
 	return (s);
 }
 
-static int ft_first_oc(char *s1, char *set)
+static int	ft_first_oc(char *s1, char *set)
 {
 	size_t	i;
-	
+
 	i = 0;
 	if (s1[i] == set[i])
 	{
 		while (set[i])
-		{  
+		{
 			if (set[i] != s1[i])
 				break ;
 			i++;
@@ -49,7 +49,7 @@ static int ft_first_oc(char *s1, char *set)
 	return (0);
 }
 
-static int ft_last_oc(char *s1, char *set)
+static int	ft_last_oc(char *s1, char *set)
 {
 	size_t	i;
 	size_t	j;

@@ -6,30 +6,13 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 12:14:03 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 13:13:32 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-int	ft_input_or_cmd(char *file)
-{
-	int r;
-
-	if (is_cmd(file, NULL))
-		return (0);
-	r = open(file, O_RDONLY);
-	if (r < 0)
-	{
-		ft_putstr_fd(ft_strjoin("pipex: ", file), 2);
-		ft_putstr_fd(ft_strjoin(": ", strerror(errno)), 2);
-		ft_putstr_fd("\n", 2);
-		exit(1);
-	}
-	return (r);
-}
-
-int is_cmd(char *file, char **cmd_ok)
+int	is_cmd(char *file, char **cmd_ok)
 {
 	int		j;
 	char	*cmd_try;
@@ -57,16 +40,15 @@ int is_cmd(char *file, char **cmd_ok)
 
 char	**create_args(char **argv, int start, int last)
 {
-	int i;
-	int j;
-	char **args;
+	int		i;
+	int		j;
+	char	**args;
 
 	j = 0;
 	i = start + 1;
 	while (argv && argv[i] && !is_cmd(argv[i], NULL))
 		i++;
 	args = malloc(sizeof(char *) * (i - start + 1 - last));
-
 	while (j < i - start - last)
 	{
 		args[j] = ft_strdup(argv[start + j]);

@@ -6,83 +6,39 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 12:15:47 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 13:17:03 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
-// leer argumentos
-// leer fichero de entrada?
-// leer comandos y sus flags?
-// ejecutarlos y esperar a que terminen
-// siguiente instrucción
-//
-//https://www.reddit.com/r/linuxquestions/comments/ail178/no_matter_how_much_i_try_i_cant_understand/
-//
-// para saber si un parámetro es un comando? https://www.codegrepper.com/code-examples/c/how+to+check+if+a+file+exists+in+c /bash
-// https://www.geeksforgeeks.org/making-linux-shell-c/
-// https://medium.com/swlh/tutorial-to-code-a-simple-shell-in-c-9405b2d3533e
-//https://stackoverflow.com/questions/21248840/example-of-waitpid-in-use
-//https://askubuntu.com/questions/428458/why-do-shells-call-fork
-//http://alumni.cs.ucr.edu/~weesan/cs153/lab2_notes.html
-//https://stackoverflow.com/questions/30149779/c-execve-parameters-spawn-a-shell-example
-// /usr/libexec/path_helper -s  
-// whereis ...
-// https://stackoverflow.com/questions/2605130/redirecting-exec-output-to-a-buffer-or-file
-// https://stackoverflow.com/questions/7292642/grabbing-output-from-exec
-// https://stackoverflow.com/questions/5225810/is-it-possible-to-have-pipe-between-two-child-processes-created-by-same-parent
-// https://www.youtube.com/watch?v=l-UhKLdh4aY
-//
 
-#include <stdio.h>
-#include <errno.h>
-
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	pid_t	child;
-
 	int		child_status;
-	int		cmds;
 	char	**cmdargs;
 	int		fds[2];	
-	int		fds2[2];
 	char	*cmd;
-	cmds = count_cmds(argv);	
-	argc = argc * 1;
-	if (argc == 1 || cmds != 2)
-	{
-		ft_putstr_fd("Usage: ./pipex infile cmd1 cmd2 outfile\n", 2);
-		return (0);
-	}
 
+	input_error_checker(argc, argv);
+	ft_dup_infile(argv[1]);
 	if (pipe(fds) < 0)
 		ft_putstr_fd("Error creating pipe", 2);
-	
-	int	fd = open(argv[1], O_RDONLY);
-	if (fd < 0)
-	{
-		perror("pipex");
-		exit(1);
-	}
-	dup2(fd, 0);
-	close(fd);
-
 	child = fork();
 	if (child == 0)
 	{	
-
 		close(fds[0]);
 		dup2(fds[1], 1);
 		close(fds[1]);
-
-		char *cmdrr[] = {"cat", NULL};
-		execve("/bin/cat", &cmdrr[0], NULL);
-
-	
+		cmdargs = create_args(argv, 2, 0);
+		is_cmd(argv[2], &cmd);
+		execve(cmd, &cmdargs[0], NULL);
+		perror("pipex");
+		exit(1);
 	}
 	waitpid(child, &child_status, 0);
 	close(fds[1]);
-	pipe(fds2);
+/*	pipe(fds2);
 	child = fork();
 	if (child == 0)
 	{
@@ -100,22 +56,13 @@ int main(int argc, char **argv)
 	waitpid(child, &child_status, 0);
 	close(fds[0]);
 	close(fds2[1]);
-
-	int fdout;
-	fdout = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
-	if (fdout < 0)
-	{
-		perror("pipex");
-		exit(1);
-	}
-	close(1);
-	dup(fdout);
-
+*/
+	ft_dup_output(argv[argc - 1]);
 	child = fork();
 	if (child == 0)
 	{
-		dup2(fds2[0], 0);
-		close(fds2[0]);
+		dup2(fds[0], 0);
+		close(fds[0]);
 		cmdargs = create_args(argv, 4, 1);
 		is_cmd(argv[4], &cmd);
 		execve(cmd, &cmdargs[0], NULL);
@@ -123,17 +70,16 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 	waitpid(child, &child_status, 0);
-	close(fds2[0]);
-
+	close(fds[0]);
 	return (0);
 }
 
 char	**get_paths(void)
 {
-	int		fds[2]; 
-	char **env;
+	int		fds[2];
+	char	**env;
 	char	*buffer;
-	
+
 	buffer = malloc(sizeof(char) * 1024);
 	pipe(fds);
 	env = malloc(sizeof(char *) * 2);
@@ -171,10 +117,10 @@ char	**path_surgery(char **path_to_cut)
 	env = ft_split_mod(e1, ':');
 	free(e2);
 	free(e1);
-	return (env); 
+	return (env);
 }
 
-void free_paths(char **paths)
+void	free_paths(char **paths)
 {
 	int	i;
 

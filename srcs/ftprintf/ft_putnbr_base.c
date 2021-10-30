@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 11:44:00 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/14 09:39:39 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/10/30 13:18:14 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ size_t	ft_putnbr_base(size_t nbr, char *base)
 		return (1);
 	}
 	if (nbr < 0)
-		return (ft_putnbr_base(nbr * - 1, base));
+		return (ft_putnbr_base(nbr * -1, base));
 	else
 		number = nbr;
 	recurs(number, base, base_len, &len);

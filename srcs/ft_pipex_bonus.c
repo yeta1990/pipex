@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/31 00:59:03 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 00:23:07 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	main(int argc, char **argv)
 	ft_dup_infile(argv[1]);
 	ft_exec_first(argv, fds);
 	ft_exec_middle(argv, fds, last);
-
 	ft_dup_output(argv[argc - 1]);
 	ft_exec_last(argv, fds, last);
 	return (0);
@@ -57,39 +56,43 @@ void	ft_exec_middle(char **argv, int fds[2], int last)
 {
 	int		i;
 	int		fds2[2];
-	int		child_status;
-	pid_t	child;
-	char	**cmdargs;
-	char	*cmd;
 
 	i = 3;
 	while (i < last - 1)
 	{
 		if (is_cmd(argv[i], NULL))
-		{
-			pipe(fds2);
-			child = fork();
-			if (child == 0)
-			{
-				close(fds2[0]);
-				dup2(fds[0], 0);
-				close(fds[0]);
-				dup2(fds2[1], 1);
-				close(fds2[1]);
-				cmdargs = create_args(argv, i, 0);
-				is_cmd(argv[i], &cmd);
-				execve(cmd, &cmdargs[0], NULL);
-				perror("pipex");
-				exit(1);
-			}
-			waitpid(child, &child_status, 0);
-			close(fds[0]);
-			close(fds2[1]);
-			fds[0] = fds2[0];
-			fds[1] = fds2[1];
-		}
+			ft_exec_middle_ops(argv, fds, fds2, i);
 		i++;
 	}
+}
+
+void	ft_exec_middle_ops(char **argv, int fds[2], int fds2[2], int i)
+{
+	int		child;
+	int		child_status;
+	char	*cmd;
+	char	**cmdargs;
+
+	pipe(fds2);
+	child = fork();
+	if (child == 0)
+	{
+		close(fds2[0]);
+		dup2(fds[0], 0);
+		close(fds[0]);
+		dup2(fds2[1], 1);
+		close(fds2[1]);
+		cmdargs = create_args(argv, i, 0);
+		is_cmd(argv[i], &cmd);
+		execve(cmd, &cmdargs[0], NULL);
+		perror("pipex");
+		exit(1);
+	}
+	waitpid(child, &child_status, 0);
+	close(fds[0]);
+	close(fds2[1]);
+	fds[0] = fds2[0];
+	fds[1] = fds2[1];
 }
 
 void	ft_exec_last(char **argv, int fds[2], int last)

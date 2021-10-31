@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 14:18:57 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/31 00:44:46 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 00:20:33 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,6 @@ int		last_cmd(int argc, char **argv);
 void	ft_exec_last(char **argv, int fds[2], int last);
 void	ft_exec_first(char **argv, int fds[2]);
 void	ft_exec_middle(char **argv, int fds[2], int last);
+void	ft_exec_middle_ops(char **argv, int fds[2], int fds2[2], int i);
 
 #endif

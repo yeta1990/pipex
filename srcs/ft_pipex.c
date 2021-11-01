@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 18:00:22 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 18:18:12 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	main(int argc, char **argv)
 {
 	int		fds[2];	
 
-	input_error_checker(argc, argv);
+	input_error_checker(argc);
 	ft_dup_infile(argv[1]);
 	if (pipe(fds) < 0)
 	{

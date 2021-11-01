@@ -6,11 +6,11 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 23:16:31 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/05 16:32:30 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 18:39:07 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "ft_pipex.h"
 
 int	ft_putstr_fd(char *s, int fd)
 {

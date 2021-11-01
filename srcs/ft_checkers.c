@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 18:16:12 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 18:44:43 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ char	**create_args(char *raw_cmd, char **cmd)
 	if (!(is_cmd(args[0], cmd)))
 	{
 		ft_putstr_fd("pipex: ", 2);
-		write(2, args[0], ft_strlen(args[0]));
+		if (args[0])
+			write(2, args[0], ft_strlen(args[0]));
 		ft_putstr_fd(": command not found\n", 2);
 		exit(1);
 	}

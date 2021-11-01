@@ -1,6 +1,6 @@
-SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c
+SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c srcs/ft_putstr_fd.c srcs/ft_putchar_fd.c
 
-SRCS_BONUS	= srcs/ft_pipex_bonus.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler_bonus.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c
+SRCS_BONUS	= srcs/ft_pipex_bonus.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler_bonus.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c srcs/ft_putstr_fd.c srcs/ft_putchar_fd.c
 
 OBJS		= $(SRCS:.c=.o)
 
@@ -20,21 +20,17 @@ INC			= ./inc
 		$(CC) $(CFLAGS) -c  $< -o $(<:.c=.o)  -I$(INC) 
 
 $(NAME):	$(OBJS)	
-			cd srcs/ftprintf && make && cd ../..
-			$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L./srcs/ftprintf/ -lftprintf
+			$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 bonus:		$(OBJS_BONUS)
-			cd srcs/ftprintf && make && cd ../..
-			$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(NAME) -L./srcs/ftprintf/ -lftprintf
+			$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(NAME)
 
 all:		$(NAME)
 
 clean:
-			cd srcs/ftprintf && make clean && cd ../..
 			$(RM) $(OBJS) $(OBJS_BONUS)
 
 fclean:		clean
-			cd srcs/ftprintf && make fclean && cd ../..
 			$(RM) $(NAME)
 
 re:			fclean all

@@ -39,8 +39,4 @@ fclean:		clean
 
 re:			fclean all
 
-san:		fclean 	
-			cd srcs/ftprintf && make && cd ../..
-			$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS) -o $(NAME) -I$(INC)  -L./srcs/ftprintf/ -lftprintf
-
 .PHONY:		all clean fclean re bonus

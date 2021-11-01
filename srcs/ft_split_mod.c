@@ -6,14 +6,16 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/24 17:03:40 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/27 11:01:21 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 13:35:03 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-void	assign_mem(char **p, char *str, char c);
+int		assign_mem(char **p, char *str, char c);
 char	**copy_words(char **p, char *str, char c, int *i);
+int		count_words(char const *str, char c);
+int		assign_mem_2(char **p, int *words, int size);
 
 char	**ft_split_mod(char const *str, char c)
 {
@@ -22,29 +24,22 @@ char	**ft_split_mod(char const *str, char c)
 	char	**p;
 
 	i = 0;
-	words = 0;
 	if (str == 0)
 	{
 		p = malloc(sizeof(char *));
+		if (!p)
+			return (0);
 		p[0] = 0;
 		return (p);
 	}
-	while (str[i])
-	{
-		if (c != str[i] && !i)
-			words++;
-		else if (c != str[i] && c == str[i - 1])
-			words++;
-		i++;
-	}
+	words = count_words(str, c);
 	p = malloc(sizeof(char *) * (words + 1));
-	if (!(p))
+	if (!(p) || assign_mem(p, (char *)str, c) == 0)
 		return (0);
-	assign_mem(p, (char *)str, c);
 	return (copy_words(p, (char *)str, c, &i));
 }
 
-void	assign_mem(char **p, char *str, char c)
+int	assign_mem(char **p, char *str, char c)
 {
 	int	i;
 	int	size;
@@ -56,16 +51,21 @@ void	assign_mem(char **p, char *str, char c)
 	while (str[++i])
 	{
 		if (c != str[i] && str[i + 1] == 0)
-			p[words++] = malloc(sizeof(char) * (size + 3));
+		{
+			if (assign_mem_2(p, &words, size + 3) == 0)
+				return (0);
+		}
 		else if (c != str[i])
 			size++;
 		else if (c == str[i] && size > 0)
 		{
-			p[words++] = malloc(sizeof(char) * (size + 2));
+			if (assign_mem_2(p, &words, size + 2) == 0)
+				return (0);
 			size = 0;
 		}
 	}
 	p[words] = 0;
+	return (1);
 }
 
 char	**copy_words(char **p, char *str, char c, int *i)
@@ -95,4 +95,44 @@ char	**copy_words(char **p, char *str, char c, int *i)
 		}
 	}
 	return (p);
+}
+
+int	count_words(char const *str, char c)
+{
+	int	i;
+	int	words;
+
+	i = 0;
+	words = 0;
+	while (str[i])
+	{
+		if (c != str[i] && !i)
+			words++;
+		else if (c != str[i] && c == str[i - 1])
+			words++;
+		i++;
+	}
+	return (words);
+}
+
+int	assign_mem_2(char **p, int *words, int size)
+{
+	int	i;
+
+	i = 0;
+	p[*words] = malloc(sizeof(char) * size);
+	if (!p[*words])
+	{
+		i = *words - 1;
+		while (i >= 0)
+		{
+			free(p[i]);
+			i--;
+		}
+		free(p);
+		return (0);
+	}
+	else
+		(*words)++;
+	return (1);
 }

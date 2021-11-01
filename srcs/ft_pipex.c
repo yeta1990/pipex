@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 23:55:45 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 13:02:55 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ void	ft_exec_first(char **argv, int fds[2])
 	char	**cmdargs;
 
 	if (pipe(fds) < 0)
-		ft_putstr_fd("Error creating pipe", 2);
+		perror("pipex");
 	child = fork();
-	if (child == 0)
+	if (child == -1)
+		perror("pipex");
+	else if (child == 0)
 	{	
 		close(fds[0]);
 		dup2(fds[1], 1);
@@ -59,6 +61,8 @@ void	ft_exec_last(char **argv, int fds[2], int last)
 	char	**cmdargs;
 
 	child = fork();
+	if (child == -1)
+		perror("pipex");
 	if (child == 0)
 	{
 		dup2(fds[0], 0);

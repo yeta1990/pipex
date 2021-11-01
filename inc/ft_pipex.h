@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 14:18:57 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 00:20:33 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 18:10:06 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,21 @@ void	*ft_memmove(void *dst, const void *src, size_t len);
 size_t	ft_strlen(const char *s);
 char	**get_paths(void);
 int		is_cmd(char *file, char **cmd_ok);
-char	**create_args(char **argv, int start, int last);
+char	**create_args(char *raw_cmd, char **cmd);
+//char	**create_args(char **argv, int start, int last);
 void	free_paths(char **paths);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split_mod(char const *str, char c);
 char	**path_surgery(char **path_to_cut);
 void	parse_and_execute(int argc, char **argv, int cmdargs);
-void	input_error_checker(int argc, char **argv);
+void	input_error_checker(int argc);
 void	ft_dup_infile(char *file);
 void	ft_dup_output(char *file);
 int		last_cmd(int argc, char **argv);
-void	ft_exec_last(char **argv, int fds[2], int last);
+void	ft_exec_last(char **argv, int fds[2]);
 void	ft_exec_first(char **argv, int fds[2]);
 void	ft_exec_middle(char **argv, int fds[2], int last);
 void	ft_exec_middle_ops(char **argv, int fds[2], int fds2[2], int i);
+char	**ft_split(char const *str, char c);
 
 #endif

@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   ft_split_mod.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/24 17:03:40 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 13:35:03 by albgarci         ###   ########.fr       */
+/*   Created: 2021/11/01 17:18:22 by albgarci          #+#    #+#             */
+/*   Updated: 2021/11/01 17:18:29 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-int		assign_mem(char **p, char *str, char c);
-char	**copy_words(char **p, char *str, char c, int *i);
-int		count_words(char const *str, char c);
-int		assign_mem_2(char **p, int *words, int size);
+int		assign_mem_mod(char **p, char *str, char c);
+char	**copy_words_mod(char **p, char *str, char c, int *i);
+int		count_words_mod(char const *str, char c);
+int		assign_mem_mod_2(char **p, int *words, int size);
 
 char	**ft_split_mod(char const *str, char c)
 {
@@ -32,14 +32,14 @@ char	**ft_split_mod(char const *str, char c)
 		p[0] = 0;
 		return (p);
 	}
-	words = count_words(str, c);
+	words = count_words_mod(str, c);
 	p = malloc(sizeof(char *) * (words + 1));
-	if (!(p) || assign_mem(p, (char *)str, c) == 0)
+	if (!(p) || assign_mem_mod(p, (char *)str, c) == 0)
 		return (0);
-	return (copy_words(p, (char *)str, c, &i));
+	return (copy_words_mod(p, (char *)str, c, &i));
 }
 
-int	assign_mem(char **p, char *str, char c)
+int	assign_mem_mod(char **p, char *str, char c)
 {
 	int	i;
 	int	size;
@@ -52,14 +52,14 @@ int	assign_mem(char **p, char *str, char c)
 	{
 		if (c != str[i] && str[i + 1] == 0)
 		{
-			if (assign_mem_2(p, &words, size + 3) == 0)
+			if (assign_mem_mod_2(p, &words, size + 3) == 0)
 				return (0);
 		}
 		else if (c != str[i])
 			size++;
 		else if (c == str[i] && size > 0)
 		{
-			if (assign_mem_2(p, &words, size + 2) == 0)
+			if (assign_mem_mod_2(p, &words, size + 2) == 0)
 				return (0);
 			size = 0;
 		}
@@ -68,7 +68,7 @@ int	assign_mem(char **p, char *str, char c)
 	return (1);
 }
 
-char	**copy_words(char **p, char *str, char c, int *i)
+char	**copy_words_mod(char **p, char *str, char c, int *i)
 {
 	int	j;
 	int	word;
@@ -97,7 +97,7 @@ char	**copy_words(char **p, char *str, char c, int *i)
 	return (p);
 }
 
-int	count_words(char const *str, char c)
+int	count_words_mod(char const *str, char c)
 {
 	int	i;
 	int	words;
@@ -115,7 +115,7 @@ int	count_words(char const *str, char c)
 	return (words);
 }
 
-int	assign_mem_2(char **p, int *words, int size)
+int	assign_mem_mod_2(char **p, int *words, int size)
 {
 	int	i;
 

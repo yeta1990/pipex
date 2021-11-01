@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 23:27:24 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 18:16:12 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,52 +38,22 @@ int	is_cmd(char *file, char **cmd_ok)
 	return (0);
 }
 
-char	**create_args(char **argv, int start, int last)
+char	**create_args(char *raw_cmd, char **cmd)
 {
-	int		i;
-	int		j;
 	char	**args;
 
-	j = 0;
-	i = start + 1;
-	while (argv && argv[i] && !is_cmd(argv[i], NULL))
-		i++;
-	args = malloc(sizeof(char *) * (i - start + 1 - last));
-	while (j < i - start - last)
+	args = ft_split(raw_cmd, ' ');
+	if (!args)
 	{
-		args[j] = ft_strdup(argv[start + j]);
-		j++;
+		ft_putstr_fd("pipex: Wrong argument: it's empty", 2);
+		exit(1);
 	}
-	args[j] = 0;
+	if (!(is_cmd(args[0], cmd)))
+	{
+		ft_putstr_fd("pipex: ", 2);
+		write(2, args[0], ft_strlen(args[0]));
+		ft_putstr_fd(": command not found\n", 2);
+		exit(1);
+	}
 	return (args);
-}
-
-int	count_cmds(char **argv)
-{
-	int		i;
-	int		cmds;
-
-	i = 1;
-	cmds = 0;
-	while (argv && argv[i])
-	{
-		if (is_cmd(argv[i], NULL))
-			cmds++;
-		i++;
-	}
-	return (cmds);
-}
-
-int	last_cmd(int argc, char **argv)
-{
-	int	i;
-
-	i = argc - 2;
-	while (i > 0)
-	{
-		if (is_cmd(argv[i], NULL))
-			return (i);
-		i--;
-	}
-	return (i);
 }

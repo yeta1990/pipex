@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 13:02:55 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/01 14:32:18 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ int	main(int argc, char **argv)
 	input_error_checker(argc, argv);
 	last = last_cmd(argc, argv);
 	ft_dup_infile(argv[1]);
+	if (pipe(fds) < 0)
+	{
+		perror("pipex");
+		exit(1);
+	}
 	ft_exec_first(argv, fds);
 	ft_dup_output(argv[argc - 1]);
 	ft_exec_last(argv, fds, last);
@@ -33,11 +38,12 @@ void	ft_exec_first(char **argv, int fds[2])
 	char	*cmd;
 	char	**cmdargs;
 
-	if (pipe(fds) < 0)
-		perror("pipex");
 	child = fork();
 	if (child == -1)
+	{
 		perror("pipex");
+		exit(1);
+	}
 	else if (child == 0)
 	{	
 		close(fds[0]);
@@ -62,7 +68,10 @@ void	ft_exec_last(char **argv, int fds[2], int last)
 
 	child = fork();
 	if (child == -1)
+	{
 		perror("pipex");
+		exit(1);
+	}
 	if (child == 0)
 	{
 		dup2(fds[0], 0);

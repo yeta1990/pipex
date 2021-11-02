@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 12:59:56 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/02 10:41:49 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 18:04:08 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_dup_infile(char *file)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
-		exit(1);
+		exit(errno);
 	}
 	dup2(fd, 0);
 	close(fd);
@@ -42,7 +42,7 @@ void	ft_dup_output(char *file)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
-		exit(1);
+		exit(errno);
 	}
 	close(1);
 	dup(fdout);

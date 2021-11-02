@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/02 17:56:50 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 18:26:59 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	ft_exec_first(char **argv, int fds[2], char *envp[])
 	if (child == -1)
 	{
 		perror("pipex");
-		exit(1);
+		exit(errno);
 	}
 	else if (child == 0)
 	{	
@@ -50,7 +50,7 @@ void	ft_exec_first(char **argv, int fds[2], char *envp[])
 		cmdargs = create_args(argv[2], &cmd, envp);
 		execve(cmd, &cmdargs[0], envp);
 		perror("pipex");
-		exit(1);
+		exit(errno);
 	}
 	waitpid(child, &child_status, WNOHANG);
 	close(fds[1]);
@@ -67,7 +67,7 @@ void	ft_exec_last(char **argv, int fds[2], char *envp[])
 	if (child == -1)
 	{
 		perror("pipex");
-		exit(1);
+		exit(errno);
 	}
 	if (child == 0)
 	{
@@ -76,7 +76,7 @@ void	ft_exec_last(char **argv, int fds[2], char *envp[])
 		cmdargs = create_args(argv[3], &cmd, envp);
 		execve(cmd, &cmdargs[0], envp);
 		perror("pipex");
-		exit(1);
+		exit(127);
 	}
 	waitpid(child, &child_status, WNOHANG);
 	close(fds[0]);

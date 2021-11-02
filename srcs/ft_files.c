@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 12:59:56 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 18:33:51 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 10:41:49 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_dup_infile(char *file)
 {
 	int	fd;
 
-	fd = open(file, O_RDONLY);
+	fd = open(file, O_RDONLY | O_NONBLOCK);
 	if (fd < 0)
 	{
 		ft_putstr_fd("pipex: ", 2);

@@ -6,13 +6,13 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 18:18:12 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 10:42:57 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char *envp[])
 {
 	int		fds[2];	
 
@@ -23,13 +23,13 @@ int	main(int argc, char **argv)
 		perror("pipex");
 		exit(1);
 	}
-	ft_exec_first(argv, fds);
+	ft_exec_first(argv, fds, envp);
 	ft_dup_output(argv[argc - 1]);
-	ft_exec_last(argv, fds);
+	ft_exec_last(argv, fds, envp);
 	return (0);
 }
 
-void	ft_exec_first(char **argv, int fds[2])
+void	ft_exec_first(char **argv, int fds[2], char *envp[])
 {
 	int		child_status;
 	pid_t	child;
@@ -48,15 +48,15 @@ void	ft_exec_first(char **argv, int fds[2])
 		dup2(fds[1], 1);
 		close(fds[1]);
 		cmdargs = create_args(argv[2], &cmd);
-		execve(cmd, &cmdargs[0], NULL);
+		execve(cmd, &cmdargs[0], envp);
 		perror("pipex");
 		exit(1);
 	}
-	waitpid(child, &child_status, 0);
+	waitpid(child, &child_status, WNOHANG);
 	close(fds[1]);
 }
 
-void	ft_exec_last(char **argv, int fds[2])
+void	ft_exec_last(char **argv, int fds[2], char *envp[])
 {
 	int		child_status;
 	pid_t	child;
@@ -74,10 +74,10 @@ void	ft_exec_last(char **argv, int fds[2])
 		dup2(fds[0], 0);
 		close(fds[0]);
 		cmdargs = create_args(argv[3], &cmd);
-		execve(cmd, &cmdargs[0], NULL);
+		execve(cmd, &cmdargs[0], envp);
 		perror("pipex");
 		exit(1);
 	}
-	waitpid(child, &child_status, 0);
+	waitpid(child, &child_status, WNOHANG);
 	close(fds[0]);
 }

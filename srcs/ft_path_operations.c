@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 23:33:39 by albgarci          #+#    #+#             */
-/*   Updated: 2021/10/30 23:34:00 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 11:13:45 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	**get_paths(void)
 	else
 	{
 		close(fds[1]);
-		read(fds[0], buffer, sizeof(buffer));
+		read(fds[0], buffer, 1024);
 		env[0] = ft_strdup(buffer);
 		env[1] = NULL;
 	}
@@ -53,6 +53,13 @@ char	**path_surgery(char **path_to_cut)
 	e1 = ft_strjoin(e2, ":/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
 	free_paths(path_to_cut);
 	env = ft_split_mod(e1, ':');
+	int	i;
+	i = 0;
+	while (env[i])
+	{
+		printf("%s\n", env[i]);
+		i++;
+	}
 	free(e2);
 	free(e1);
 	return (env);

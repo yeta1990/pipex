@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/02 10:42:57 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 11:10:43 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 int	main(int argc, char **argv, char *envp[])
 {
 	int		fds[2];	
-
+	
+	get_paths();
+	exit(1);
 	input_error_checker(argc);
 	ft_dup_infile(argv[1]);
 	if (pipe(fds) < 0)

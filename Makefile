@@ -1,6 +1,6 @@
-SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c srcs/ft_putstr_fd.c srcs/ft_putchar_fd.c
+SRCS		= srcs/ft_pipex.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c srcs/ft_putstr_fd.c srcs/ft_putchar_fd.c srcs/ft_memcmp.c
 
-SRCS_BONUS	= srcs/ft_pipex_bonus.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler_bonus.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c srcs/ft_putstr_fd.c srcs/ft_putchar_fd.c
+SRCS_BONUS	= srcs/ft_pipex_bonus.c srcs/ft_strdup.c srcs/ft_strjoin.c srcs/ft_substr.c srcs/ft_memmove.c srcs/ft_strlen.c srcs/ft_memcpy.c srcs/ft_checkers.c srcs/ft_strtrim_full_string.c srcs/ft_split_mod.c srcs/ft_error_handler_bonus.c srcs/ft_files.c srcs/ft_path_operations.c srcs/ft_split.c srcs/ft_putstr_fd.c srcs/ft_putchar_fd.c srcs/ft_memcmp.c
 
 OBJS		= $(SRCS:.c=.o)
 

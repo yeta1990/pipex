@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 14:18:57 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/02 10:14:56 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 17:34:30 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ char	*ft_strjoin(char const *s1, char const *s2);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 void	*ft_memmove(void *dst, const void *src, size_t len);
 size_t	ft_strlen(const char *s);
-char	**get_paths(void);
-int		is_cmd(char *file, char **cmd_ok);
-char	**create_args(char *raw_cmd, char **cmd);
+char	**get_paths(char *envp[]);
+int		is_cmd(char *file, char **cmd_ok, char *envp[]);
+char	**create_args(char *raw_cmd, char **cmd, char *envp[]);
 void	free_paths(char **paths);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split_mod(char const *str, char c);
@@ -47,5 +47,6 @@ void	ft_exec_middle_ops(char **argv, int fds[2], int fds2[2], int i);
 char	**ft_split(char const *str, char c);
 int		ft_putstr_fd(char *s, int fd);
 int		ft_putchar_fd(char c, int fd);
+int		ft_memcmp(const void *s1, const void *s2, size_t n);
 
 #endif

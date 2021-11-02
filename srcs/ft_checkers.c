@@ -6,19 +6,19 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/01 18:44:43 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/02 17:42:48 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_pipex.h"
 
-int	is_cmd(char *file, char **cmd_ok)
+int	is_cmd(char *file, char **cmd_ok, char *envp[])
 {
 	int		j;
 	char	*cmd_try;
 	char	**paths;
 
-	paths = get_paths();
+	paths = get_paths(envp);
 	j = 0;
 	while (paths[j])
 	{
@@ -38,7 +38,7 @@ int	is_cmd(char *file, char **cmd_ok)
 	return (0);
 }
 
-char	**create_args(char *raw_cmd, char **cmd)
+char	**create_args(char *raw_cmd, char **cmd, char *envp[])
 {
 	char	**args;
 
@@ -48,7 +48,7 @@ char	**create_args(char *raw_cmd, char **cmd)
 		ft_putstr_fd("pipex: Wrong argument: it's empty", 2);
 		exit(1);
 	}
-	if (!(is_cmd(args[0], cmd)))
+	if (!(is_cmd(args[0], cmd, envp)))
 	{
 		ft_putstr_fd("pipex: ", 2);
 		if (args[0])

@@ -20,7 +20,7 @@ INC			= ./inc
 		$(CC) $(CFLAGS) -c  $< -o $(<:.c=.o)  -I$(INC) 
 
 $(NAME):	$(OBJS)	
-			$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+			$(CC) $(CFLAGS) -o $(NAME) $?
 
 bonus:		$(OBJS_BONUS)
 			$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(NAME)

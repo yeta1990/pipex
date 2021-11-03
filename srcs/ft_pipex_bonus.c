@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/04 13:40:15 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/03 01:16:39 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	ft_exec_middle(char **argv, int argc, int fds[2], char *envp[])
 	i = 3;
 	while (i < argc - 2)
 	{
-		ft_exec_middle_ops(argv[i], fds, fds2, envp);
+		ft_exec_mid_ops(argv[i], fds, fds2, envp);
 		i++;
 		close(fds[0]);
 		close(fds2[1]);
@@ -74,7 +74,7 @@ void	ft_exec_middle(char **argv, int argc, int fds[2], char *envp[])
 	}
 }
 
-void	ft_exec_middle_ops(char *raw_cmd, int fds[2], int fds2[2], char *envp[])
+void	ft_exec_mid_ops(char *raw_cmd, int fds[2], int fds2[2], char *envp[])
 {
 	int		child;
 	int		child_status;

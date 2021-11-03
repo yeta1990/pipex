@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 17:38:20 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/04 16:38:29 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/03 01:42:48 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,10 @@ char	**create_args(char *raw_cmd, char **cmd, char *envp[])
 	char	**args;
 
 	args = ft_split(raw_cmd, ' ');
-	if (!args)
+	if (!args || !(*args))
 	{
-		ft_putstr_fd("pipex: Wrong argument: it's empty", 2);
+		ft_putstr_fd("pipex: : command not found\n", 2);
+		free_paths(args);
 		exit(127);
 	}
 	cmd_not_raw(args);
@@ -55,6 +56,7 @@ char	**create_args(char *raw_cmd, char **cmd, char *envp[])
 		if (args[0])
 			write(2, args[0], ft_strlen(args[0]));
 		ft_putstr_fd(": command not found\n", 2);
+		free_paths(args);
 		exit(127);
 	}
 	return (args);

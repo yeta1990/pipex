@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/02 18:26:59 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/04 16:54:11 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char *envp[])
 
 	input_error_checker(argc);
 	ft_dup_infile(argv[1]);
+	printf("uiiiii");
 	if (pipe(fds) < 0)
 	{
 		perror("pipex");
@@ -25,8 +26,7 @@ int	main(int argc, char **argv, char *envp[])
 	}
 	ft_exec_first(argv, fds, envp);
 	ft_dup_output(argv[argc - 1]);
-	ft_exec_last(argv, fds, envp);
-	return (0);
+	return (ft_exec_last(argv, fds, envp));
 }
 
 void	ft_exec_first(char **argv, int fds[2], char *envp[])
@@ -56,7 +56,7 @@ void	ft_exec_first(char **argv, int fds[2], char *envp[])
 	close(fds[1]);
 }
 
-void	ft_exec_last(char **argv, int fds[2], char *envp[])
+int	ft_exec_last(char **argv, int fds[2], char *envp[])
 {
 	int		child_status;
 	pid_t	child;
@@ -76,8 +76,9 @@ void	ft_exec_last(char **argv, int fds[2], char *envp[])
 		cmdargs = create_args(argv[3], &cmd, envp);
 		execve(cmd, &cmdargs[0], envp);
 		perror("pipex");
-		exit(127);
+		exit(errno);
 	}
-	waitpid(child, &child_status, WNOHANG);
+	waitpid(child, &child_status, 0);
 	close(fds[0]);
+	return (WEXITSTATUS(child_status));
 }

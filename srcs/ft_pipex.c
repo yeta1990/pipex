@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 13:08:44 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/04 16:54:11 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/04 16:59:45 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	main(int argc, char **argv, char *envp[])
 
 	input_error_checker(argc);
 	ft_dup_infile(argv[1]);
-	printf("uiiiii");
 	if (pipe(fds) < 0)
 	{
 		perror("pipex");

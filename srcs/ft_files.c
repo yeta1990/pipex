@@ -6,7 +6,7 @@
 /*   By: albgarci <albgarci@student.42madrid.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 12:59:56 by albgarci          #+#    #+#             */
-/*   Updated: 2021/11/04 16:57:33 by albgarci         ###   ########.fr       */
+/*   Updated: 2021/11/04 17:00:22 by albgarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,12 @@ int	ft_dup_infile(char *file)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
-	//	exit(0);
+		exit(0);
 	//	close(fd);
 		//close(fd);
 	//	return (0);
 	}
-	if (dup2(fd, 0) < 0)
-	{
-		exit(EXIT_FAILURE);
-		exit(1);
-		return (-1);
-	}
-	else
-	{
-		dup(0);
-		close(0);
-	}
+	dup2(fd, 0);
 	close(fd);
 	return (1);
 }
